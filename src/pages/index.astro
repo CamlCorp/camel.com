@@ -1,0 +1,61 @@
+---
+import GetWork from "../components/GetWork.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { Image } from "astro:assets";
+const title = "";
+const meta = "CamelCorp is the design and research practice of Omar Mohammad.";
+import image from "../images/og.png";
+import { getCollection } from "astro:content";
+const allWork = await getCollection("work");
+
+allWork.sort((a, b) => {
+  const dateA = new Date(a.data.pubDate).getTime(); // Convert to timestamp
+  const dateB = new Date(b.data.pubDate).getTime(); // Convert to timestamp
+
+  return dateB - dateA; // Subtracting timestamps is valid
+});
+---
+
+<style>
+  ul {
+    margin-left: var(--m-1);
+    margin-right: var(--m-1);
+  }
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: var(--m-4);
+    margin-bottom: var(--m-1);
+  }
+  a {
+    display: inline-block; /* Prevents full-width stretching */
+    max-width: fit-content; /* Ensures it only takes up necessary space */
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
+  img {
+    width: 124px;
+    border: none;
+   
+    display: block;
+  }
+</style>
+
+<BaseLayout title={title} description={meta} image={image.src}>
+  <ul>
+    {
+      allWork.map((post: any) => (
+        <li>
+          <a href={`/work/${post.id}/`}>
+            <Image src={post.data.image} alt={post.data.imgAlt} />
+          </a>
+          <GetWork post={post} />
+          {/* <a href={`/work/${post.id}/`}>{post.data.description}</a> */}
+        </li>
+      ))
+    }
+  </ul>
+</BaseLayout>

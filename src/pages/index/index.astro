@@ -1,0 +1,48 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+// Fetch all posts from the "work" collection
+const allPosts = await getCollection("work");
+
+// Get unique tags and calculate post count for each tag
+const tagsWithCounts = Array.from(
+  allPosts
+    .flatMap((post) => post.data.tags) // Flatten all tags into one array
+    .reduce((tagMap, tag) => {
+      tagMap.set(tag, (tagMap.get(tag) || 0) + 1); // Count occurrences of each tag
+      return tagMap;
+    }, new Map())
+).sort(([tagA], [tagB]) => tagA.localeCompare(tagB)); // Sort tags alphabetically
+
+const title = "Index";
+const meta = "عمر محمد Omar Mohammad designs, researches, and works with Afghan & Islamic culture: architecture, materials, symbols, technology, and love."
+import image from "../../images/me.jpg"
+---
+
+<style>
+  div {
+    margin-left: var(--m-1);
+  }
+  p {
+    font-weight: bold;
+  }
+  a {
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
+</style>
+
+<BaseLayout title={title} description={meta} image={image.src}>
+  <div>
+    <ul>
+      {tagsWithCounts.map(([tag, count]) => (
+        <li>
+          <a href={`/index/${tag}`}>[{tag}] ({count})</a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</BaseLayout>

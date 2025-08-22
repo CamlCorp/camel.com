@@ -1,0 +1,54 @@
+---
+import Analytics from "@vercel/analytics/astro";
+import { SEO } from "astro-seo";
+import "../styles/global.css";
+import Navigation from "../components/Navigation.astro";
+
+const { title, description, image } = Astro.props;
+const currentPath = Astro.url.pathname;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
+    <link rel="canonical" href={`https://camel.com${currentPath}`} />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="sitemap" href="/sitemap-0.xml" />
+    <SEO
+      title={`${title ? `${title} | ` : ""}CAMEL`}
+      description={description}
+      openGraph={{
+        basic: {
+          title: title || "CAMEL", // Ensure 'title' is always defined
+          type: "article", // Always include a valid type
+          image: image || "../images/og.png", // Provide a default image if missing
+        },
+        optional: {
+          description: description,
+          siteName: "camel.com" + currentPath,
+        },
+      }}
+      extend={{
+        meta: [
+          {
+            name: "twitter:image",
+            content: image,
+          },
+          {
+            name: "twitter:title",
+            content: `${title ? `${title} | ` : ""}CamelCorp`,
+          },
+          { name: "twitter:description", content: description },
+          { name: "twitter:card", content: "summary_large_image" },
+        ],
+      }}
+    />
+  </head>
+  <body>
+    <Navigation />
+    <slot />
+    <Analytics />
+  </body>
+</html>

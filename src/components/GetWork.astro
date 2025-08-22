@@ -1,0 +1,50 @@
+---
+const { posts, post } = Astro.props;
+---
+
+<style>
+  a {
+    color: var(--txtColor);
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
+  ul {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    list-style: none;
+    margin-bottom: var(--m-2);
+  }
+  li {
+    margin-right: 4px;
+  }
+
+</style>
+
+<div>
+  {post ? (
+    <!-- Single post display -->
+    <div class="single-post">
+      <a href={`/work/${post.id}/`}>
+        {post.data.title} {post.data.tags.map((tag: any) => `[${tag}]`).join(" ")}
+      </a>
+    </div>
+  ) : (
+    <!-- Multiple posts display -->
+    <ul>
+      {
+        posts.map((post: any) => (
+          <li>
+            <a href={`/work/${post.id}/`}>
+              {" "}
+              {post.data.title}{" "}
+              {post.data.tags.map((tag: any) => `[${tag}]`).join(" ")}{" "}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  )}
+</div>

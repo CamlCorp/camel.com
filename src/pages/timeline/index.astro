@@ -1,0 +1,99 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+const news = await Astro.glob("./entries/*.md");
+
+const title = "Timeline";
+const meta =
+  "عمر محمد Omar Mohammad designs, researches, and works with Afghan & Islamic culture: architecture, materials, symbols, technology, and love.";
+import image from "../../images/me.jpg";
+
+// Sort news by `pubDate` in descending order
+const sortedNews = news.sort((a, b) => {
+  const dateA = new Date(a.frontmatter.pubDate).getTime(); // Convert to timestamp
+  const dateB = new Date(b.frontmatter.pubDate).getTime(); // Convert to timestamp
+
+  return dateB - dateA; // Subtracting timestamps is valid
+});
+
+console.log(sortedNews);
+---
+
+<style>
+  .container {
+    padding-left: var(--m-1);
+    margin-right: 0px;
+    margin-bottom: var(--m-1);
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: var(--m-1);
+  }
+
+  .container div {
+    width: calc(100% / 5 - var(--m-1));
+    flex-shrink: 0;
+  }
+
+  .container div:last-child {
+    margin-right: 0;
+  }
+
+  /* Responsive column reduction */
+  @media (max-width: 1511px) {
+    .container div {
+      width: calc(100% / 4 - var(--m-1));
+    }
+  }
+  
+  @media (max-width: 1200px) {
+    .container div {
+      width: calc(100% / 3 - var(--m-1));
+    }
+  }
+  
+  @media (max-width: 900px) {
+    .container div {
+      width: calc(100% / 2 - var(--m-1));
+    }
+  }
+  
+  @media (max-width: 600px) {
+    .container div {
+      width: calc(100% - var(--m-1));
+    }
+  }
+</style>
+
+<BaseLayout title={title} description={meta} image={image.src}>
+  <div class="container">
+    {
+      sortedNews.map((item) => (
+        <div class="md">
+          <item.Content />
+        </div>
+      ))
+    }
+  </div>
+</BaseLayout>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const anchorTags = document.querySelectorAll(".md a");
+
+  anchorTags.forEach((anchor) => {
+    const href = anchor.getAttribute("href");
+
+    // Remove ↩ character from text content
+    if (anchor.textContent) {
+      anchor.textContent = anchor.textContent.replace(/↩/g, "");
+    }
+
+    // Skip anchor links (e.g., href="#some-id")
+    if (href && !href.startsWith("#")) {
+      anchor.setAttribute("target", "_blank");
+      anchor.setAttribute("rel", "noopener noreferrer");
+    }
+  });
+});
+
+</script>

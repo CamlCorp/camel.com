@@ -1,0 +1,428 @@
+---
+import { Image } from "astro:assets";
+const { frontmatter } = Astro.props;
+import BaseLayout from "./BaseLayout.astro";
+---
+
+<style>
+  .frontMatter {
+    /* position: sticky; */
+    display: block;
+    top: var(--m-1);
+    z-index: 1;
+    margin-left: var(--m-1);
+    margin-right: var(--m-1);
+    /* max-width: calc(var(--maxWidth)); */
+  }
+  .meta {
+    max-width: 75ch;
+    margin-right: var(--m-1);
+  }
+  .frontMatter a {
+    text-decoration: none;
+  }
+  .frontMatter a:hover {
+    text-decoration: underline;
+  }
+  .backLink {
+    /* background-color: red; */
+    /* display: none; */
+  }
+  @media (max-width: 1511px) {
+    .frontMatter {
+      /* position: relative;
+      top: 0; */
+    }
+  }
+  .link-container {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: var(--m-2);
+    align-items: flex-start; /* Prevent stretching to container width */
+  }
+
+  a {
+    display: inline-block; /* Ensures the anchor size matches its content */
+    text-decoration: underline;
+    padding: 0; /* Remove any unnecessary padding */
+    margin: 0; /* Remove unnecessary margins */
+  }
+
+  :global(.footnotes ol li p a) {
+    word-break: break-all;
+  }
+
+  img {
+    width: 100%;
+    height: auto;
+    margin: var(--m-2);
+    z-index: 1;
+  }
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    list-style: none;
+    margin-bottom: var(--m-2);
+  }
+  li {
+    margin-right: 4px;
+  }
+  p {
+    font-weight: bold;
+  }
+  .mdContainer {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin-top: var(--m-2);
+    margin-bottom: var(--m-1);
+  }
+  @media (max-width: 1172px) {
+    .mdContainer {
+      margin: var(--m-1);
+      margin-top: 0;
+    }
+  }
+  .md {
+    display: flex;
+    flex-direction: column;
+    max-width: var(--maxWidth);
+    z-index: 1;
+    background-color: white !important;
+  }
+  .btnContainer {
+    margin: var(--m-2) 0;
+    display: flex;
+    flex-direction: row;
+    gap: var(--m-3);
+    width: 100%;
+    justify-content: center;
+  }
+  .btnContainer a {
+    text-decoration: none;
+  }
+  .btnContainer a:hover {
+    text-decoration: underline;
+  }
+  button {
+    background-color: var(--bgColor);
+    border: none;
+    font-family: var(--mainFont);
+    padding: 0;
+    font-size: 16px;
+    color: black;
+  }
+  button:hover {
+    cursor: pointer;
+    text-decoration: underline;
+  }
+
+  @media (max-width: 1172px) {
+    .imgGrid {
+      display: none;
+    }
+  }
+
+  /* Image Grid Styles */
+  .imgGrid {
+    /* margin: var(--m-2); */
+
+    /* margin-right: var(--m-1); */
+    margin-top: var(--m-1);
+  }
+  .imageGrid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--m-1);
+    margin-bottom: var(--m-1);
+    justify-items: flex-start;
+  }
+
+  .imageGrid img {
+    width: 400px !important;
+    height: 200px !important;
+    object-fit: cover !important;
+    border: none !important;
+    /* border-radius: 4px; */
+    display: block !important;
+    object-position: center !important;
+  }
+
+  /* Lightbox overlay */
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    /* background: rgba(65, 51, 14, 0.9); */
+    background-color: white;
+    display: none;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    z-index: 9999;
+    /* padding-top: var(--m-1); */
+    /* padding: var(--m-2); */
+  }
+  .lightbox img {
+    max-width: 90vw;
+    max-height: 80vh;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    border: none;
+    /* margin-bottom: var(--m-1); */
+    /* box-shadow: 0 10px 30px rgba(65, 51, 14, 0.4); */
+    cursor: pointer;
+  }
+  .lightbox button {
+    position: absolute;
+    background: none;
+    border: none;
+    color: var(--txtColor);
+    font-size: 16px;
+    cursor: pointer;
+    line-height: 1;
+  }
+
+  .lightbox .lb-prev {
+    left: var(--m-1);
+  }
+  @media (max-width: 1172px) {
+    .lightbox .lb-prev {
+      bottom: var(--m-2);
+    }
+    .lightbox .lb-next {
+      bottom: var(--m-2);
+    }
+    .lightbox .lb-caption {
+      font-size: 14px;
+    }
+  }
+  .lightbox .lb-next {
+    right: var(--m-1);
+  }
+  .lightbox .lb-close {
+    top: var(--m-2);
+    right: var(--m-1);
+    font-size: 16px;
+    color: var(--txtColor);
+  }
+  .lightbox .lb-caption {
+    padding: var(--m-1);
+    font-size: 16px;
+  }
+  .lightbox .lb-counter {
+   padding-bottom: var(--m-1);
+    font-size: 16px;
+    color: var(--txtColor);
+  }
+</style>
+
+<BaseLayout
+  title={frontmatter.description}
+  description={frontmatter.meta}
+  image={frontmatter.image.src}
+/>
+<div class="container">
+  <div class="frontMatter">
+    <ul>
+      {
+        frontmatter.tags.map((tag: any, index: number) => (
+          <li>
+            <a href={`/index/${tag}`}>[{tag}]</a>
+          </li>
+        ))
+      }
+      <!-- <li>{new Date(frontmatter.pubDate).getFullYear()}</li> -->
+    </ul>
+    <p>{frontmatter.description}</p>
+    <div class="meta">{frontmatter.meta}</div>
+    <p></p>
+    <div
+      class="link-container"
+      style={`display: ${frontmatter.links?.length ? "flex" : "none"}`}
+    >
+      {
+        frontmatter.links.map((link: any, index: number) => (
+          <a href={link} target="_blank" rel="noopener noreferrer">
+            {new URL(link).hostname}
+          </a>
+        ))
+      }
+    </div>
+    <div class="backLink"><a href="/">[←]</a></div>
+    <div class="imgGrid" id="imageGallery">
+      <div class="imageGrid" id="imageGrid"></div>
+    </div>
+    <!-- Lightbox overlay -->
+    <div id="lightbox" class="lightbox" aria-hidden="true">
+      <div id="lbCounter" class="lb-counter"></div>
+      <button id="lbClose" class="lb-close" aria-label="Close">[close]</button>
+      <button id="lbPrev" class="lb-prev" aria-label="Previous">[prev]</button>
+      <img id="lightboxImage" alt="" />
+      <button id="lbNext" class="lb-next" aria-label="Next">[next]</button>
+      <div id="lightboxCaption" class="lb-caption"></div>
+    </div>
+  </div>
+  <div class="mdContainer">
+    <Image src={frontmatter.image} alt={frontmatter.imgAlt} />
+
+    <article class="md">
+      <slot />
+      <hr />
+      <div class="btnContainer">
+        <a class="backBtn" href="/">[back]</a>
+        <button class="back-to-top" id="backToTop">[top]</button>
+      </div>
+    </article>
+  </div>
+  <!-- Back to Top Button -->
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    // Back to Top Button functionality
+    const backToTopBtn = document.getElementById("backToTop");
+
+    if (backToTopBtn) {
+      window.addEventListener("scroll", () => {
+        // Show button when scrolled down
+        if (window.scrollY > 300) {
+          backToTopBtn.style.display = "block";
+        } else {
+          backToTopBtn.style.display = "none";
+        }
+      });
+
+      backToTopBtn.addEventListener("click", () => {
+        window.scrollTo({ top: 0, behavior: "auto" });
+      });
+    }
+    // Select all anchor tags
+    const anchorTags = document.querySelectorAll(".md a:not(.backBtn)");
+
+    anchorTags.forEach((anchor) => {
+      const href = anchor.getAttribute("href");
+
+      // Skip anchor links (e.g., href="#some-id")
+      if (href && !href.startsWith("#")) {
+        anchor.setAttribute("target", "_blank");
+        anchor.setAttribute("rel", "noopener noreferrer");
+      }
+    });
+
+    // Gather all images displayed in the WorkLayout + lightbox wiring
+    const imageGrid = document.getElementById("imageGrid");
+    if (imageGrid) {
+      const gallerySrcs: string[] = [];
+      const galleryAlts: string[] = [];
+      let currentIndex = 0;
+
+      const lightbox = document.getElementById(
+        "lightbox"
+      ) as HTMLDivElement | null;
+      const lightboxImage = document.getElementById(
+        "lightboxImage"
+      ) as HTMLImageElement | null;
+      const lightboxCaption = document.getElementById(
+        "lightboxCaption"
+      ) as HTMLDivElement | null;
+      const lbPrev = document.getElementById(
+        "lbPrev"
+      ) as HTMLButtonElement | null;
+      const lbNext = document.getElementById(
+        "lbNext"
+      ) as HTMLButtonElement | null;
+      const lbClose = document.getElementById(
+        "lbClose"
+      ) as HTMLButtonElement | null;
+
+      function formatCaption(text: string) {
+        if (!text) return "";
+        let html = String(text);
+        // Markdown-style links: [label](https://example.com)
+        html = html.replace(
+          /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,
+          '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>'
+        );
+        // Raw URLs
+        html = html.replace(
+          /(https?:\/\/[^\s<>'")]+)/g,
+          '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>'
+        );
+        return html;
+      }
+
+      const lbCounter = document.getElementById("lbCounter");
+
+
+      function showLightbox(index: number) {
+        if (!lightbox || !lightboxImage || gallerySrcs.length === 0) return;
+        currentIndex = (index + gallerySrcs.length) % gallerySrcs.length;
+        lightboxImage.src = gallerySrcs[currentIndex];
+        if (lightboxCaption) {
+          const altText = galleryAlts[currentIndex] || "";
+          lightboxCaption.innerHTML = formatCaption(altText);
+        }
+
+         // Update counter (1-based index)
+  if (lbCounter) {
+    lbCounter.textContent = `${currentIndex + 1} / ${gallerySrcs.length}`;
+  }
+        lightbox.style.display = "flex";
+        document.body.style.overflow = "hidden";
+      }
+      function hideLightbox() {
+        if (!lightbox) return;
+        lightbox.style.display = "none";
+        document.body.style.overflow = "";
+      }
+      lbPrev?.addEventListener("click", () => showLightbox(currentIndex - 1));
+      lbNext?.addEventListener("click", () => showLightbox(currentIndex + 1));
+      lbClose?.addEventListener("click", hideLightbox);
+      lightbox?.addEventListener("click", (e) => {
+        if (e.target === lightbox) hideLightbox();
+      });
+      lightboxImage?.addEventListener("click", () =>
+        showLightbox(currentIndex + 1)
+      );
+      document.addEventListener("keydown", (e) => {
+        if (!lightbox || lightbox.style.display !== "flex") return;
+        if (e.key === "Escape") hideLightbox();
+        if (e.key === "ArrowRight") showLightbox(currentIndex + 1);
+        if (e.key === "ArrowLeft") showLightbox(currentIndex - 1);
+      });
+
+      // Get all images from the article content
+      const contentImages = document.querySelectorAll(".md img");
+      console.log("Found", contentImages.length, "images in content");
+
+      contentImages.forEach((img, index) => {
+        const imgClone = img.cloneNode(true) as HTMLImageElement;
+        // Force the clone to have the correct dimensions
+        imgClone.style.width = "160px";
+        imgClone.style.height = "120px";
+        imgClone.style.objectFit = "cover";
+        imgClone.style.objectPosition = "center";
+        imgClone.style.display = "block";
+        imageGrid.appendChild(imgClone);
+        const thisIndex = gallerySrcs.length;
+        const orig = img as HTMLImageElement;
+        gallerySrcs.push(orig.src);
+        galleryAlts.push(orig.alt || "");
+        imgClone.style.cursor = "zoom-in";
+        imgClone.addEventListener("click", () => showLightbox(thisIndex));
+        console.log("Added image", index + 1, "with src:", imgClone.src);
+      });
+
+      // Hide the gallery if no images were found
+      if (imageGrid.children.length === 0) {
+        const gallery = document.getElementById("imageGallery");
+        if (gallery) {
+          gallery.style.display = "none";
+        }
+      }
+
+      console.log("Total images in gallery:", imageGrid.children.length);
+    }
+  });
+</script>

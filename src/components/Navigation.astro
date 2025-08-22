@@ -1,0 +1,86 @@
+---
+import { Image } from "astro:assets";
+import camel from "../images/caml_b.gif";
+const currentPath = Astro.url.pathname;
+---
+
+<nav>
+  <ul>
+    <!-- <a href="/"><Image src={camel} alt="Camel gif" /></a> -->
+    <li style="font-weight: bold; margin-bottom:var(--m-2)"><a href="/">CAMEL</a></li>
+    <li>
+      <a href="/info/" class={currentPath === "/info/" ? "active" : ""}>Info</a>
+    </li>
+    <li>
+      <a href="/timeline/" class={currentPath === "/timeline/" ? "active" : ""}
+        >Timeline</a
+      >
+    </li>
+    <li>
+      <a href="/index/" class={currentPath.startsWith("/index") ? "active" : ""}
+        >Index</a
+      >
+    </li>
+    <li>
+      <a
+        href="/"
+        class={currentPath === "/" || currentPath.startsWith("/work")
+          ? "active"
+          : ""}>Work</a
+      >
+    </li>
+  </ul>
+</nav>
+
+<script>
+  const nameElement = document.getElementById("name");
+
+  if (nameElement) {
+    const names = ["Omar Mohammad", "عمر محمد"];
+    let index = 0;
+
+    setInterval(() => {
+      // Fade out
+      nameElement.classList.add("hidden");
+
+      setTimeout(() => {
+        // Change the text after fade-out is complete
+        index = (index + 1) % names.length;
+        nameElement.textContent = names[index];
+
+        // Fade in
+        nameElement.classList.remove("hidden");
+      }, 500); // Match this delay to the CSS transition duration
+    }, 5000); // Change every 2 seconds
+  } else {
+    console.error("Element with ID 'name' not found.");
+  }
+</script>
+
+<style>
+  img {
+    width: 56px;
+    border: none;
+    margin-bottom: var(--m-1);
+  }
+  a {
+    display: inline-block;
+    transition: opacity 0.5s ease-in-out; /* Smooth opacity transition */
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
+  a.hidden {
+    opacity: 0; /* Hidden state for fade-out effect */
+  }
+  nav {
+    margin: var(--m-1);
+  }
+  h1 {
+    font-size: 16px;
+  }
+  .active {
+    font-weight: bold;
+  }
+</style>
