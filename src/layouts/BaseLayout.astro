@@ -1,5 +1,6 @@
 ---
 import Analytics from "@vercel/analytics/astro";
+import SpeedInsights from "@vercel/speed-insights/astro";
 import { SEO } from "astro-seo";
 import "../styles/global.css";
 import Navigation from "../components/Navigation.astro";
@@ -49,6 +50,7 @@ const currentPath = Astro.url.pathname;
   <body>
     <Navigation />
     <slot />
+    <SpeedInsights />
     <Analytics />
   </body>
 </html>
