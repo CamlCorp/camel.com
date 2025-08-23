@@ -62,7 +62,8 @@ ul {
   --smlFont: 16px;
   --maxWidth: 75ch;
   --bgColor: #ffffff;
-  --txtColor: rgb(65, 51, 14);
+  /* --txtColor: rgb(65, 51, 14); */
+  --txtColor: black;
 }
 /* End variables */
 
