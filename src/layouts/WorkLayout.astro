@@ -117,11 +117,11 @@ import BaseLayout from "./BaseLayout.astro";
     text-decoration: underline;
   }
 
-  @media (max-width: 1172px) {
+  /* @media (max-width: 1172px) {
     .imgGrid {
       display: none;
     }
-  }
+  } */
 
   /* Image Grid Styles */
   .imgGrid {
@@ -146,6 +146,24 @@ import BaseLayout from "./BaseLayout.astro";
     /* border-radius: 4px; */
     display: block !important;
     object-position: center !important;
+  }
+  
+  /* Mobile/Responsive Image Grid */
+  @media (max-width: 1172px) {
+    .imageGrid {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      scrollbar-width: thin;
+      -webkit-overflow-scrolling: touch;
+      padding: var(--m-1) 0;
+    }
+    
+    .imageGrid img {
+      width: 120px !important;
+      height: 90px !important;
+      flex-shrink: 0;
+      border: 1px solid #ccc !important;
+    }
   }
 
   /* Lightbox overlay */
@@ -341,6 +359,11 @@ import BaseLayout from "./BaseLayout.astro";
       function formatCaption(text: string) {
         if (!text) return "";
         let html = String(text);
+        
+        // Make quoted text italic (text surrounded by quotes)
+        html = html.replace(/"([^"]+)"/g, '<em>$1</em>');
+        html = html.replace(/'([^']+)'/g, '<em>$1</em>');
+        
         // Markdown-style links: [label](https://example.com)
         html = html.replace(
           /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,
