@@ -1,10 +1,10 @@
 ---
-import GetWork from "../components/GetWork.astro";
-import BaseLayout from "../layouts/BaseLayout.astro";
+import GetWork from "../../components/GetWork.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
 import { Image } from "astro:assets";
 const title = "";
 const meta = "CamelCorp is the design and research practice of Omar Mohammad.";
-import image from "../images/og.png";
+import image from "../../images/og.png";
 import { getCollection } from "astro:content";
 const allWork = await getCollection("work");
 
@@ -37,15 +37,15 @@ allWork.sort((a, b) => {
     text-decoration: underline;
   }
   img {
-    width: 72px;  
-    object-fit:cover;
-    height: 72px; 
+    width: 72px;
+    object-fit: cover;
+    height: 72px;
     display: block;
   }
 </style>
 
 <BaseLayout title={title} description={meta} image={image.src}>
-  <!-- <ul>
+  <ul>
     {
       allWork.map((post: any) => (
         <li>
@@ -57,5 +57,5 @@ allWork.sort((a, b) => {
         </li>
       ))
     }
-  </ul> -->
+  </ul>
 </BaseLayout>

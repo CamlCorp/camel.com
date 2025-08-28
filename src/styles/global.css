@@ -59,9 +59,9 @@ ul {
   --lh-1: 1.375;
   --mainFont: serif;
   --mobile: 1172px;
-  --smlFont: 16px;
+  --smlFont: 15px;
   --maxWidth: 75ch;
-  --bgColor: #ffffff;
+  --bgColor: #a19a90;
   /* --txtColor: rgb(65, 51, 14); */
   --txtColor: black;
 }
@@ -70,7 +70,7 @@ ul {
 /* Global CSS */
 body {
   font-family: var(--mainFont);
-  font-size: 18px;
+  font-size: 17px;
   line-height: var(--lh-1);
   background-color: var(--bgColor);
   color: var(--txtColor);
@@ -83,7 +83,7 @@ sup {
 }
 
 img,iframe {
-  /* border: 0.25px solid var(--txtColor); */
+  border: 0.25px solid var(--txtColor);
 }
 
 a {

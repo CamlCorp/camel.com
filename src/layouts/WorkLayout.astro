@@ -5,17 +5,21 @@ import BaseLayout from "./BaseLayout.astro";
 ---
 
 <style>
+  .container {
+    /* padding-top: var(--m-1); */
+  }
   .frontMatter {
     /* position: sticky; */
     display: block;
     top: var(--m-1);
     z-index: 1;
-    margin-left: var(--m-1);
-    margin-right: var(--m-1);
+    padding-left: var(--m-1);
+    padding-right: var(--m-1);
+    padding-bottom: var(--m-3);
     /* max-width: calc(var(--maxWidth)); */
   }
   .meta {
-    max-width: 75ch;
+    max-width: 62.5ch;
     margin-right: var(--m-1);
   }
   .frontMatter a {
@@ -28,10 +32,28 @@ import BaseLayout from "./BaseLayout.astro";
     /* background-color: red; */
     /* display: none; */
   }
+  
+  .back-button {
+    background: var(--bgColor);
+    border: none;
+    font-family: var(--mainFont);
+    padding: 0;
+    font-size: 16px;
+    color: var(--txtColor);
+    cursor: pointer;
+    text-decoration: none;
+  }
+  
+  .back-button:hover {
+    text-decoration: underline;
+  }
   @media (max-width: 1511px) {
     .frontMatter {
       /* position: relative;
       top: 0; */
+    }
+    .meta {
+      width: 100%;
     }
   }
   .link-container {
@@ -55,8 +77,13 @@ import BaseLayout from "./BaseLayout.astro";
   img {
     width: 100%;
     height: auto;
-    margin: var(--m-2);
+    margin-bottom: var(--m-2);
     z-index: 1;
+  }
+  @media (max-width: 1172px) {
+    img {
+      /* margin-top: var(--m-1); */
+    }
   }
   ul {
     display: flex;
@@ -74,8 +101,7 @@ import BaseLayout from "./BaseLayout.astro";
     display: flex;
     align-items: center;
     flex-direction: column;
-    margin-top: var(--m-2);
-    margin-bottom: var(--m-1);
+    /* margin-bottom: var(--m-1); */
   }
   @media (max-width: 1172px) {
     .mdContainer {
@@ -88,7 +114,6 @@ import BaseLayout from "./BaseLayout.astro";
     flex-direction: column;
     max-width: var(--maxWidth);
     z-index: 1;
-    background-color: white !important;
   }
   .btnContainer {
     margin: var(--m-2) 0;
@@ -105,14 +130,14 @@ import BaseLayout from "./BaseLayout.astro";
     text-decoration: underline;
   }
   button {
-    background-color: var(--bgColor);
+    background-color: white;
     border: none;
     font-family: var(--mainFont);
     padding: 0;
     font-size: 16px;
     color: black;
   }
-  button:hover {
+  a:hover {
     cursor: pointer;
     text-decoration: underline;
   }
@@ -132,7 +157,10 @@ import BaseLayout from "./BaseLayout.astro";
   }
   .imageGrid {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
     gap: var(--m-1);
     margin-bottom: var(--m-1);
     justify-items: flex-start;
@@ -147,7 +175,7 @@ import BaseLayout from "./BaseLayout.astro";
     display: block !important;
     object-position: center !important;
   }
-  
+
   /* Mobile/Responsive Image Grid */
   @media (max-width: 1172px) {
     .imageGrid {
@@ -155,9 +183,9 @@ import BaseLayout from "./BaseLayout.astro";
       overflow-x: auto;
       scrollbar-width: thin;
       -webkit-overflow-scrolling: touch;
-      padding: var(--m-1) 0;
+      /* padding: var(--m-1) 0; */
     }
-    
+
     .imageGrid img {
       width: 120px !important;
       height: 90px !important;
@@ -168,6 +196,7 @@ import BaseLayout from "./BaseLayout.astro";
 
   /* Lightbox overlay */
   .lightbox {
+    padding-top: var(--m-0);
     position: fixed;
     inset: 0;
     /* background: rgba(65, 51, 14, 0.9); */
@@ -221,18 +250,19 @@ import BaseLayout from "./BaseLayout.astro";
   .lightbox .lb-close {
     top: var(--m-2);
     right: var(--m-1);
-    font-size: 16px;
+    font-size: 15px;
     color: var(--txtColor);
   }
   .lightbox .lb-caption {
-    padding: var(--m-1);
-    font-size: 16px;
+    padding: var(--m-2);
+    font-size: 15px;
+    text-align: center;
   }
   .lightbox .lb-counter {
     position: absolute;
     top: var(--m-2);
     left: var(--m-1);
-    font-size: 16px;
+    font-size: 15px;
     color: var(--txtColor);
   }
 </style>
@@ -269,7 +299,9 @@ import BaseLayout from "./BaseLayout.astro";
         ))
       }
     </div>
-    <div class="backLink"><a href="/">[←]</a></div>
+    <div class="backLink">
+      <button onclick="history.back()" class="back-button">[←]</button>
+    </div>
     <div class="imgGrid" id="imageGallery">
       <div class="imageGrid" id="imageGrid"></div>
     </div>
@@ -290,8 +322,8 @@ import BaseLayout from "./BaseLayout.astro";
       <slot />
       <hr />
       <div class="btnContainer">
-        <a class="backBtn" href="/">[back]</a>
-        <button class="back-to-top" id="backToTop">[top]</button>
+        <a class="backBtn" href="/work">[back]</a>
+        <a class="back-to-top" id="backToTop">[top]</a>
       </div>
     </article>
   </div>
@@ -359,11 +391,11 @@ import BaseLayout from "./BaseLayout.astro";
       function formatCaption(text: string) {
         if (!text) return "";
         let html = String(text);
-        
+
         // Make quoted text italic (text surrounded by quotes)
-        html = html.replace(/"([^"]+)"/g, '<em>$1</em>');
-        html = html.replace(/'([^']+)'/g, '<em>$1</em>');
-        
+        html = html.replace(/"([^"]+)"/g, "<em>$1</em>");
+        html = html.replace(/'([^']+)'/g, "<em>$1</em>");
+
         // Markdown-style links: [label](https://example.com)
         html = html.replace(
           /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,
@@ -379,7 +411,6 @@ import BaseLayout from "./BaseLayout.astro";
 
       const lbCounter = document.getElementById("lbCounter");
 
-
       function showLightbox(index: number) {
         if (!lightbox || !lightboxImage || gallerySrcs.length === 0) return;
         currentIndex = (index + gallerySrcs.length) % gallerySrcs.length;
@@ -389,10 +420,10 @@ import BaseLayout from "./BaseLayout.astro";
           lightboxCaption.innerHTML = formatCaption(altText);
         }
 
-         // Update counter (1-based index)
-  if (lbCounter) {
-    lbCounter.textContent = `${currentIndex + 1} / ${gallerySrcs.length}`;
-  }
+        // Update counter (1-based index)
+        if (lbCounter) {
+          lbCounter.textContent = `${currentIndex + 1} / ${gallerySrcs.length}`;
+        }
         lightbox.style.display = "flex";
         document.body.style.overflow = "hidden";
       }
@@ -424,8 +455,8 @@ import BaseLayout from "./BaseLayout.astro";
       contentImages.forEach((img, index) => {
         const imgClone = img.cloneNode(true) as HTMLImageElement;
         // Force the clone to have the correct dimensions
-        imgClone.style.width = "160px";
-        imgClone.style.height = "120px";
+        imgClone.style.width = "144px";
+        imgClone.style.height = "144px";
         imgClone.style.objectFit = "cover";
         imgClone.style.objectPosition = "center";
         imgClone.style.display = "block";
