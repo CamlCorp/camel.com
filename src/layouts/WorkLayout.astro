@@ -19,8 +19,12 @@ import BaseLayout from "./BaseLayout.astro";
     /* max-width: calc(var(--maxWidth)); */
   }
   .meta {
-    max-width: 62.5ch;
+    max-width: 75ch;
     margin-right: var(--m-1);
+    white-space: pre-line;
+  }
+  .meta p {
+    font-weight: normal;
   }
   .frontMatter a {
     text-decoration: none;
@@ -288,7 +292,11 @@ import BaseLayout from "./BaseLayout.astro";
       <!-- <li>{new Date(frontmatter.pubDate).getFullYear()}</li> -->
     </ul>
     <p>{frontmatter.description}</p>
-    <div class="meta">{frontmatter.meta}</div>
+    <div class="meta">
+      {frontmatter.meta.split('<br>').map((section: string) => (
+        <p>{section}</p>
+      ))}
+    </div>
     <p></p>
     <div
       class="link-container"

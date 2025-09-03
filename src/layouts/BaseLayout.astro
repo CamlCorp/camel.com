@@ -2,11 +2,31 @@
 import Analytics from "@vercel/analytics/astro";
 import SpeedInsights from "@vercel/speed-insights/astro";
 import { SEO } from "astro-seo";
+import { Image } from "astro:assets";
 import "../styles/global.css";
 import Navigation from "../components/Navigation.astro";
 
+// Import camel images
+import camel001 from "../images/camels/001.png";
+import camel002 from "../images/camels/002.png";
+import camel003 from "../images/camels/003.png";
+import camel004 from "../images/camels/004.png";
+import camel005 from "../images/camels/005.png";
+import camel006 from "../images/camels/006.png";
+import camel007 from "../images/camels/007.png";
+
 const { title, description, image } = Astro.props;
 const currentPath = Astro.url.pathname;
+
+const camelImages = [
+  camel001,
+  camel002,
+  camel003,
+  camel004,
+  camel005,
+  camel006,
+  camel007,
+];
 ---
 
 <html lang="en">
@@ -49,8 +69,82 @@ const currentPath = Astro.url.pathname;
   </head>
   <body>
     <Navigation />
+
+    <!-- Camel Image Gallery - Only show on home page -->
+    {currentPath === "/" && (
+      <div class="camel-gallery">
+        {
+          camelImages.map((camelImage, index) => (
+            <Image
+              src={camelImage}
+              alt={`Camel ${index + 1}`}
+              class={`camel-image ${index === 0 ? "active" : ""}`}
+              width={800}
+              height={200}
+            />
+          ))
+        }
+      </div>
+    )}
+
     <slot />
     <SpeedInsights />
     <Analytics />
   </body>
 </html>
+
+<style>
+  .camel-gallery {
+    position: relative;
+    max-width: 25%;
+    margin: var(--m-1);
+    overflow: hidden;
+    background: #f5f5f5;
+  }
+
+  .camel-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+  }
+
+  .camel-image:first-child {
+    position: relative;
+  }
+
+  .camel-image.active {
+    opacity: 1;
+  }
+
+  @media (max-width: 768px) {
+    .camel-gallery {
+      max-width: 100%;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const images = document.querySelectorAll(".camel-image");
+    let currentIndex = 0;
+
+    function showNextImage() {
+      // Hide current image
+      images[currentIndex].classList.remove("active");
+
+      // Move to next image
+      currentIndex = (currentIndex + 1) % images.length;
+
+      // Show next image
+      images[currentIndex].classList.add("active");
+    }
+
+    // Start cycling every 3 seconds
+    setInterval(showNextImage, 3000);
+  });
+</script>
