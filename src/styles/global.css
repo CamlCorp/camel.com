@@ -83,7 +83,7 @@ sup {
 }
 
 img,iframe {
-  border: 0.25px solid var(--txtColor);
+  outline: 0.25px solid var(--txtColor);
 }
 
 a {

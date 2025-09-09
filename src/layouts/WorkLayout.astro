@@ -36,7 +36,7 @@ import BaseLayout from "./BaseLayout.astro";
     /* background-color: red; */
     /* display: none; */
   }
-  
+
   .back-button {
     background: var(--bgColor);
     border: none;
@@ -47,7 +47,7 @@ import BaseLayout from "./BaseLayout.astro";
     cursor: pointer;
     text-decoration: none;
   }
-  
+
   .back-button:hover {
     text-decoration: underline;
   }
@@ -155,29 +155,25 @@ import BaseLayout from "./BaseLayout.astro";
   /* Image Grid Styles */
   .imgGrid {
     /* margin: var(--m-2); */
-
     /* margin-right: var(--m-1); */
     margin-top: var(--m-1);
+    margin-left: var(--m-1);
+    /* margin-right: var(--m-1); */
   }
+  @media (max-width: 1172px) {
+    .imgGrid {
+      margin-left: 0;
+    }
+  }
+
   .imageGrid {
     display: flex;
     flex-wrap: nowrap;
     overflow-x: auto;
     scrollbar-width: thin;
     -webkit-overflow-scrolling: touch;
-    gap: var(--m-1);
     margin-bottom: var(--m-1);
     justify-items: flex-start;
-  }
-
-  .imageGrid img {
-    width: 400px !important;
-    height: 200px !important;
-    object-fit: cover !important;
-    border: none !important;
-    /* border-radius: 4px; */
-    display: block !important;
-    object-position: center !important;
   }
 
   /* Mobile/Responsive Image Grid */
@@ -188,13 +184,6 @@ import BaseLayout from "./BaseLayout.astro";
       scrollbar-width: thin;
       -webkit-overflow-scrolling: touch;
       /* padding: var(--m-1) 0; */
-    }
-
-    .imageGrid img {
-      width: 120px !important;
-      height: 90px !important;
-      flex-shrink: 0;
-      border: 1px solid #ccc !important;
     }
   }
 
@@ -220,6 +209,7 @@ import BaseLayout from "./BaseLayout.astro";
     height: auto;
     object-fit: contain;
     border: none;
+    outline: none;
     /* margin-bottom: var(--m-1); */
     /* box-shadow: 0 10px 30px rgba(65, 51, 14, 0.4); */
     cursor: pointer;
@@ -293,9 +283,11 @@ import BaseLayout from "./BaseLayout.astro";
     </ul>
     <p>{frontmatter.description}</p>
     <div class="meta">
-      {frontmatter.meta.split('<br>').map((section: string) => (
-        <p>{section}</p>
-      ))}
+      {
+        frontmatter.meta
+          .split("<br>")
+          .map((section: string) => <p>{section}</p>)
+      }
     </div>
     <p></p>
     <div
@@ -311,10 +303,7 @@ import BaseLayout from "./BaseLayout.astro";
       }
     </div>
     <div class="backLink">
-      <button onclick="history.back()" class="back-button">[←]</button>
-    </div>
-    <div class="imgGrid" id="imageGallery">
-      <div class="imageGrid" id="imageGrid"></div>
+      <a href="/work" class="back-button">[←]</a>
     </div>
     <!-- Lightbox overlay -->
     <div id="lightbox" class="lightbox" aria-hidden="true">
@@ -325,6 +314,9 @@ import BaseLayout from "./BaseLayout.astro";
       <button id="lbNext" class="lb-next" aria-label="Next">[next]</button>
       <div id="lightboxCaption" class="lb-caption"></div>
     </div>
+  </div>
+  <div class="imgGrid" id="imageGallery">
+    <div class="imageGrid" id="imageGrid"></div>
   </div>
   <div class="mdContainer">
     <Image src={frontmatter.image} alt={frontmatter.imgAlt} />
@@ -471,6 +463,19 @@ import BaseLayout from "./BaseLayout.astro";
         imgClone.style.objectFit = "cover";
         imgClone.style.objectPosition = "center";
         imgClone.style.display = "block";
+
+        // Only apply border styling to the first image
+        if (index === 0) {
+          imgClone.style.outline = "0.25px solid black";
+          imgClone.style.borderTop = "0.25px solid black";
+          imgClone.style.borderBottom = "0.25px solid black";
+          imgClone.style.borderLeft = "0.25px solid black";
+        } else {
+          imgClone.style.outline = "0.25px solid black";
+          imgClone.style.borderTop = "0.25px solid black";
+          imgClone.style.borderBottom = "0.25px solid black";
+        }
+
         imageGrid.appendChild(imgClone);
         const thisIndex = gallerySrcs.length;
         const orig = img as HTMLImageElement;
