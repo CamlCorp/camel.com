@@ -37,6 +37,10 @@ const camelImages = [
     <meta name="viewport" content="width=device-width" />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <link rel="sitemap" href="/sitemap-0.xml" />
+    <meta
+      name="google-site-verification"
+      content="H1WydRZC7_2WJmWPsufdG2CA8jS51fUptimwyoyCsY0"
+    />
     <SEO
       title={`${title ? `${title} | ` : ""}CAMEL`}
       description={description}
@@ -71,10 +75,10 @@ const camelImages = [
     <Navigation />
 
     <!-- Camel Image Gallery - Only show on home page -->
-    {currentPath === "/" && (
-      <div class="camel-gallery">
-        {
-          camelImages.map((camelImage, index) => (
+    <!-- {
+      currentPath === "/" && (
+        <div class="camel-gallery">
+          {camelImages.map((camelImage, index) => (
             <Image
               src={camelImage}
               alt={`Camel ${index + 1}`}
@@ -82,10 +86,10 @@ const camelImages = [
               width={800}
               height={200}
             />
-          ))
-        }
-      </div>
-    )}
+          ))}
+        </div>
+      )
+    } -->
 
     <slot />
     <SpeedInsights />
