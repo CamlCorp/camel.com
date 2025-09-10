@@ -11,7 +11,7 @@
   "dependencies": {
     "@astrojs/markdoc": "^0.12.7",
     "@astrojs/mdx": "^4.0.5",
-    "@astrojs/sitemap": "^3.2.1",
+    "@astrojs/sitemap": "^3.5.1",
     "@astropub/md": "^1.0.0",
     "@markdoc/markdoc": "^0.4.0",
     "@vercel/analytics": "^1.4.1",
