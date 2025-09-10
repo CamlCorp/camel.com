@@ -15,7 +15,7 @@ import BaseLayout from "./BaseLayout.astro";
     z-index: 1;
     padding-left: var(--m-1);
     padding-right: var(--m-1);
-    padding-bottom: var(--m-3);
+    /* padding-bottom: var(--m-3); */
     /* max-width: calc(var(--maxWidth)); */
   }
   .meta {
@@ -262,6 +262,48 @@ import BaseLayout from "./BaseLayout.astro";
     font-size: 15px;
     color: var(--txtColor);
   }
+
+  /* Navigation buttons for image grid */
+  .nav-buttons {
+    display: flex;
+    gap: 4px;
+    z-index: 10;
+    justify-content: flex-start;
+    margin: var(--m-1);
+  }
+  @media (max-width: 1172px) {
+    .nav-buttons {
+      display: none;
+    }
+  }
+
+  .nav-button {
+    background: var(--bgColor);
+    border: none;
+    font-family: var(--mainFont);
+    font-size: 16px;
+    color: var(--txtColor);
+    cursor: pointer;
+    text-decoration: none;
+    user-select: none;
+  }
+
+  .nav-button:hover {
+    text-decoration: underline;
+  }
+
+  .nav-button:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+
+  .nav-button:disabled:hover {
+    text-decoration: none;
+  }
+
+  .imgGrid {
+    position: relative;
+  }
 </style>
 
 <BaseLayout
@@ -302,9 +344,9 @@ import BaseLayout from "./BaseLayout.astro";
         ))
       }
     </div>
-    <div class="backLink">
-      <a href="/work" class="back-button">[←]</a>
-    </div>
+    <!-- <div class="backLink">
+      <a href="/work" class="back-button">[back]</a>
+    </div> -->
     <!-- Lightbox overlay -->
     <div id="lightbox" class="lightbox" aria-hidden="true">
       <div id="lbCounter" class="lb-counter"></div>
@@ -314,6 +356,14 @@ import BaseLayout from "./BaseLayout.astro";
       <button id="lbNext" class="lb-next" aria-label="Next">[next]</button>
       <div id="lightboxCaption" class="lb-caption"></div>
     </div>
+  </div>
+  <div class="nav-buttons">
+    <button class="nav-button" id="scrollLeft" aria-label="Scroll left"
+      >[←]</button
+    >
+    <button class="nav-button" id="scrollRight" aria-label="Scroll right"
+      >[→]</button
+    >
   </div>
   <div class="imgGrid" id="imageGallery">
     <div class="imageGrid" id="imageGrid"></div>
@@ -495,6 +545,65 @@ import BaseLayout from "./BaseLayout.astro";
       }
 
       console.log("Total images in gallery:", imageGrid.children.length);
+
+      // Add scroll navigation functionality
+      const scrollLeftBtn = document.getElementById(
+        "scrollLeft"
+      ) as HTMLButtonElement;
+      const scrollRightBtn = document.getElementById(
+        "scrollRight"
+      ) as HTMLButtonElement;
+
+      function updateButtonStates() {
+        if (!imageGrid || !scrollLeftBtn || !scrollRightBtn) return;
+
+        const isAtStart = imageGrid.scrollLeft <= 0;
+        const isAtEnd =
+          imageGrid.scrollLeft >= imageGrid.scrollWidth - imageGrid.clientWidth;
+        const isScrollable = imageGrid.scrollWidth > imageGrid.clientWidth;
+
+        scrollLeftBtn.disabled = isAtStart;
+        scrollRightBtn.disabled = isAtEnd;
+
+        // Hide nav buttons if not scrollable or both disabled
+        const navButtons = document.querySelector(
+          ".nav-buttons"
+        ) as HTMLElement;
+        if (navButtons) {
+          if (!isScrollable || (isAtStart && isAtEnd)) {
+            navButtons.style.display = "none";
+          } else {
+            navButtons.style.display = "flex";
+          }
+        }
+      }
+
+      function scrollGrid(direction: "left" | "right") {
+        if (!imageGrid) return;
+
+        const scrollAmount = 200; // Adjust this value to control scroll distance
+        const currentScroll = imageGrid.scrollLeft;
+        const newScroll =
+          direction === "left"
+            ? currentScroll - scrollAmount
+            : currentScroll + scrollAmount;
+
+        imageGrid.scrollTo({
+          left: newScroll,
+          behavior: "smooth",
+        });
+      }
+
+      if (scrollLeftBtn && scrollRightBtn) {
+        scrollLeftBtn.addEventListener("click", () => scrollGrid("left"));
+        scrollRightBtn.addEventListener("click", () => scrollGrid("right"));
+
+        // Update button states on scroll
+        imageGrid.addEventListener("scroll", updateButtonStates);
+
+        // Initial button state update
+        updateButtonStates();
+      }
     }
   });
 </script>
