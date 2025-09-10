@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://c-a-m-e-l.org/sitemap-0.xml
