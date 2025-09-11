@@ -3,9 +3,8 @@ import GetWork from "../../components/GetWork.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
 
-const meta =
-  "عمر محمد Omar Mohammad designs, researches, and works with Afghan & Islamic culture: architecture, materials, symbols, technology, and love.";
-import image from "../../images/me.jpg";
+const meta = "CAMEL is the design and research practice of Omar Mohammad.";
+import image from "../../images/og.png";
 
 export async function getStaticPaths() {
   const allPosts = await getCollection("work");
