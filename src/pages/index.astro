@@ -3,7 +3,8 @@ import GetWork from "../components/GetWork.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { Image } from "astro:assets";
 const title = "";
-const meta = "CAMEL is the design and research practice of Omar Mohammad.";
+const meta =
+  "CAMEL is a design and research practice that embeds buildings, drawings, objects, and software with culture. CAMEL utilizes the archives of architecture and design to uncover lost and often forgotten cultural matters of importance. These findings are then used to inform proposals and speculations in the form of design-research projects. The ecological, material, and cultural realities of Earth inform the basis of our work. With ancestral roots in Afghanistan, CAMEL carries on the traditions of architecture, design, and wisdom found across the Islamic regions of Central Asia.";
 import image from "../images/og.png";
 import { getCollection } from "astro:content";
 const allWork = await getCollection("work");
@@ -37,9 +38,9 @@ allWork.sort((a, b) => {
     text-decoration: underline;
   }
   img {
-    width: 72px;  
-    object-fit:cover;
-    height: 72px; 
+    width: 72px;
+    object-fit: cover;
+    height: 72px;
     display: block;
   }
 </style>
