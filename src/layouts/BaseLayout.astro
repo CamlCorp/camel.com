@@ -33,7 +33,7 @@ const camelImages = [
   <head>
     <meta charset="utf-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
-    <link rel="canonical" href={`https://camel.com${currentPath}`} />
+    <link rel="canonical" href={`https://c-a-m-e-l.org${currentPath}`} />
     <meta name="viewport" content="width=device-width" />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <link rel="sitemap" href="/sitemap-0.xml" />
@@ -48,11 +48,11 @@ const camelImages = [
         basic: {
           title: title || "CAMEL", // Ensure 'title' is always defined
           type: "article", // Always include a valid type
-          image: image || "../images/og.png", // Provide a default image if missing
+          image: image || "../images/caml_b.gif", // Provide a default image if missing
         },
         optional: {
           description: description,
-          siteName: "camel.com" + currentPath,
+          siteName: "c-a-m-e-l.org" + currentPath,
         },
       }}
       extend={{
@@ -63,7 +63,7 @@ const camelImages = [
           },
           {
             name: "twitter:title",
-            content: `${title ? `${title} | ` : ""}CamelCorp`,
+            content: `${title ? `${title} | ` : ""}CAMEL`,
           },
           { name: "twitter:description", content: description },
           { name: "twitter:card", content: "summary_large_image" },
