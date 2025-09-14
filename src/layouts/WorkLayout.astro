@@ -175,7 +175,7 @@ import BaseLayout from "./BaseLayout.astro";
     overflow-x: auto;
     scrollbar-width: thin;
     -webkit-overflow-scrolling: touch;
-    margin-bottom: var(--m-1);
+    margin-bottom: var(--m-2);
     justify-items: flex-start;
   }
 
@@ -185,8 +185,31 @@ import BaseLayout from "./BaseLayout.astro";
       flex-wrap: nowrap;
       overflow-x: auto;
       scrollbar-width: thin;
+      margin-bottom: 0;
       -webkit-overflow-scrolling: touch;
       /* padding: var(--m-1) 0; */
+    }
+  }
+
+  .imageGrid::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .imageGrid {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  /* Mobile divider after image grid */
+  @media (max-width: 1172px) {
+    .imgGrid::after {
+      content: "";
+      display: block;
+      width: 100%;
+      height: 0.25px;
+      background-color: var(--txtColor);
+      margin: var(--m-1) 0;
     }
   }
 
@@ -418,13 +441,13 @@ import BaseLayout from "./BaseLayout.astro";
       }
     });
 
-      // Gather all images displayed in the WorkLayout + lightbox wiring
-      const imageGrid = document.getElementById("imageGrid");
-      if (imageGrid) {
-        const gallerySrcs: string[] = [];
-        const galleryAlts: string[] = [];
-        const galleryTypes: string[] = []; // Track whether each item is 'img' or 'iframe'
-        let currentIndex = 0;
+    // Gather all images displayed in the WorkLayout + lightbox wiring
+    const imageGrid = document.getElementById("imageGrid");
+    if (imageGrid) {
+      const gallerySrcs: string[] = [];
+      const galleryAlts: string[] = [];
+      const galleryTypes: string[] = []; // Track whether each item is 'img' or 'iframe'
+      let currentIndex = 0;
 
       const lightbox = document.getElementById(
         "lightbox"
@@ -471,14 +494,16 @@ import BaseLayout from "./BaseLayout.astro";
       function showLightbox(index: number) {
         if (!lightbox || !lightboxImage || gallerySrcs.length === 0) return;
         currentIndex = (index + gallerySrcs.length) % gallerySrcs.length;
-        
+
         // Check if the current item is an iframe using our tracking array
         const isIframe = galleryTypes[currentIndex] === "iframe";
-        
+
         if (isIframe) {
           // Hide the image and show iframe
           lightboxImage.style.display = "none";
-          let lightboxIframe = document.getElementById("lightboxIframe") as HTMLIFrameElement;
+          let lightboxIframe = document.getElementById(
+            "lightboxIframe"
+          ) as HTMLIFrameElement;
           if (!lightboxIframe) {
             lightboxIframe = document.createElement("iframe");
             lightboxIframe.id = "lightboxIframe";
@@ -496,14 +521,16 @@ import BaseLayout from "./BaseLayout.astro";
         } else {
           // Show the image and hide iframe
           lightboxImage.style.display = "block";
-          const lightboxIframe = document.getElementById("lightboxIframe") as HTMLIFrameElement;
+          const lightboxIframe = document.getElementById(
+            "lightboxIframe"
+          ) as HTMLIFrameElement;
           if (lightboxIframe) {
             lightboxIframe.style.display = "none";
             lightboxIframe.src = ""; // Clear iframe src when not in use
           }
           lightboxImage.src = gallerySrcs[currentIndex];
         }
-        
+
         if (lightboxCaption) {
           const altText = galleryAlts[currentIndex] || "";
           lightboxCaption.innerHTML = formatCaption(altText);
@@ -540,7 +567,9 @@ import BaseLayout from "./BaseLayout.astro";
       // Add the frontmatter image as the first image in the grid
       const frontmatterImage = document.querySelector(".mdContainer img");
       if (frontmatterImage) {
-        const frontmatterImgClone = frontmatterImage.cloneNode(true) as HTMLImageElement;
+        const frontmatterImgClone = frontmatterImage.cloneNode(
+          true
+        ) as HTMLImageElement;
         // Set constant height, let width be proportional
         frontmatterImgClone.style.height = "144px";
         frontmatterImgClone.style.width = "auto";
@@ -559,8 +588,13 @@ import BaseLayout from "./BaseLayout.astro";
         galleryAlts.push(orig.alt || "");
         galleryTypes.push("img");
         frontmatterImgClone.style.cursor = "zoom-in";
-        frontmatterImgClone.addEventListener("click", () => showLightbox(thisIndex));
-        console.log("Added frontmatter image with src:", frontmatterImgClone.src);
+        frontmatterImgClone.addEventListener("click", () =>
+          showLightbox(thisIndex)
+        );
+        console.log(
+          "Added frontmatter image with src:",
+          frontmatterImgClone.src
+        );
       }
 
       // Get all images and iframes from the article content in document order
@@ -570,7 +604,7 @@ import BaseLayout from "./BaseLayout.astro";
       // Process all content in document order
       allContent.forEach((element, index) => {
         const isIframe = element.tagName === "IFRAME";
-        
+
         if (isIframe) {
           const iframe = element as HTMLIFrameElement;
           const iframeClone = iframe.cloneNode(true) as HTMLIFrameElement;
