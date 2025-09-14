@@ -415,12 +415,13 @@ import BaseLayout from "./BaseLayout.astro";
       }
     });
 
-    // Gather all images displayed in the WorkLayout + lightbox wiring
-    const imageGrid = document.getElementById("imageGrid");
-    if (imageGrid) {
-      const gallerySrcs: string[] = [];
-      const galleryAlts: string[] = [];
-      let currentIndex = 0;
+      // Gather all images displayed in the WorkLayout + lightbox wiring
+      const imageGrid = document.getElementById("imageGrid");
+      if (imageGrid) {
+        const gallerySrcs: string[] = [];
+        const galleryAlts: string[] = [];
+        const galleryTypes: string[] = []; // Track whether each item is 'img' or 'iframe'
+        let currentIndex = 0;
 
       const lightbox = document.getElementById(
         "lightbox"
@@ -445,7 +446,7 @@ import BaseLayout from "./BaseLayout.astro";
         if (!text) return "";
         let html = String(text);
 
-        // Make quoted text italic (text surrounded by quotes)
+        // Make quoted text italic (text surrounded by quotes) - handle both single and double quotes
         html = html.replace(/"([^"]+)"/g, "<em>$1</em>");
         html = html.replace(/'([^']+)'/g, "<em>$1</em>");
 
@@ -467,7 +468,39 @@ import BaseLayout from "./BaseLayout.astro";
       function showLightbox(index: number) {
         if (!lightbox || !lightboxImage || gallerySrcs.length === 0) return;
         currentIndex = (index + gallerySrcs.length) % gallerySrcs.length;
-        lightboxImage.src = gallerySrcs[currentIndex];
+        
+        // Check if the current item is an iframe using our tracking array
+        const isIframe = galleryTypes[currentIndex] === "iframe";
+        
+        if (isIframe) {
+          // Hide the image and show iframe
+          lightboxImage.style.display = "none";
+          let lightboxIframe = document.getElementById("lightboxIframe") as HTMLIFrameElement;
+          if (!lightboxIframe) {
+            lightboxIframe = document.createElement("iframe");
+            lightboxIframe.id = "lightboxIframe";
+            lightboxIframe.style.maxWidth = "90vw";
+            lightboxIframe.style.maxHeight = "80vh";
+            lightboxIframe.style.width = "100%";
+            lightboxIframe.style.height = "80vh";
+            lightboxIframe.style.border = "none";
+            lightboxIframe.style.outline = "none";
+            lightboxIframe.style.cursor = "pointer";
+            lightbox.insertBefore(lightboxIframe, lightboxImage.nextSibling);
+          }
+          lightboxIframe.src = gallerySrcs[currentIndex];
+          lightboxIframe.style.display = "block";
+        } else {
+          // Show the image and hide iframe
+          lightboxImage.style.display = "block";
+          const lightboxIframe = document.getElementById("lightboxIframe") as HTMLIFrameElement;
+          if (lightboxIframe) {
+            lightboxIframe.style.display = "none";
+            lightboxIframe.src = ""; // Clear iframe src when not in use
+          }
+          lightboxImage.src = gallerySrcs[currentIndex];
+        }
+        
         if (lightboxCaption) {
           const altText = galleryAlts[currentIndex] || "";
           lightboxCaption.innerHTML = formatCaption(altText);
@@ -501,39 +534,88 @@ import BaseLayout from "./BaseLayout.astro";
         if (e.key === "ArrowLeft") showLightbox(currentIndex - 1);
       });
 
-      // Get all images from the article content
-      const contentImages = document.querySelectorAll(".md img");
-      console.log("Found", contentImages.length, "images in content");
+      // Add the frontmatter image as the first image in the grid
+      const frontmatterImage = document.querySelector(".mdContainer img");
+      if (frontmatterImage) {
+        const frontmatterImgClone = frontmatterImage.cloneNode(true) as HTMLImageElement;
+        // Set constant height, let width be proportional
+        frontmatterImgClone.style.height = "144px";
+        frontmatterImgClone.style.width = "auto";
+        frontmatterImgClone.style.objectFit = "contain";
+        frontmatterImgClone.style.objectPosition = "center";
+        frontmatterImgClone.style.display = "block";
+        frontmatterImgClone.style.outline = "0.25px solid black";
+        frontmatterImgClone.style.borderTop = "0.25px solid black";
+        frontmatterImgClone.style.borderBottom = "0.25px solid black";
+        frontmatterImgClone.style.borderLeft = "0.25px solid black";
 
-      contentImages.forEach((img, index) => {
-        const imgClone = img.cloneNode(true) as HTMLImageElement;
-        // Force the clone to have the correct dimensions
-        imgClone.style.width = "144px";
-        imgClone.style.height = "144px";
-        imgClone.style.objectFit = "cover";
-        imgClone.style.objectPosition = "center";
-        imgClone.style.display = "block";
-
-        // Only apply border styling to the first image
-        if (index === 0) {
-          imgClone.style.outline = "0.25px solid black";
-          imgClone.style.borderTop = "0.25px solid black";
-          imgClone.style.borderBottom = "0.25px solid black";
-          imgClone.style.borderLeft = "0.25px solid black";
-        } else {
-          imgClone.style.outline = "0.25px solid black";
-          imgClone.style.borderTop = "0.25px solid black";
-          imgClone.style.borderBottom = "0.25px solid black";
-        }
-
-        imageGrid.appendChild(imgClone);
+        imageGrid.appendChild(frontmatterImgClone);
         const thisIndex = gallerySrcs.length;
-        const orig = img as HTMLImageElement;
+        const orig = frontmatterImage as HTMLImageElement;
         gallerySrcs.push(orig.src);
         galleryAlts.push(orig.alt || "");
-        imgClone.style.cursor = "zoom-in";
-        imgClone.addEventListener("click", () => showLightbox(thisIndex));
-        console.log("Added image", index + 1, "with src:", imgClone.src);
+        galleryTypes.push("img");
+        frontmatterImgClone.style.cursor = "zoom-in";
+        frontmatterImgClone.addEventListener("click", () => showLightbox(thisIndex));
+        console.log("Added frontmatter image with src:", frontmatterImgClone.src);
+      }
+
+      // Get all images and iframes from the article content in document order
+      const allContent = document.querySelectorAll(".md img, .md iframe");
+      console.log("Found", allContent.length, "total media items in content");
+
+      // Process all content in document order
+      allContent.forEach((element, index) => {
+        const isIframe = element.tagName === "IFRAME";
+        
+        if (isIframe) {
+          const iframe = element as HTMLIFrameElement;
+          const iframeClone = iframe.cloneNode(true) as HTMLIFrameElement;
+          // Set constant height, let width be proportional
+          iframeClone.style.height = "144px";
+          iframeClone.style.width = "auto";
+          iframeClone.style.display = "block";
+          iframeClone.style.border = "0.25px solid black";
+
+          imageGrid.appendChild(iframeClone);
+          const thisIndex = gallerySrcs.length;
+          gallerySrcs.push(iframe.src);
+          galleryAlts.push(iframe.title || "Embedded content");
+          galleryTypes.push("iframe");
+          iframeClone.style.cursor = "zoom-in";
+          iframeClone.addEventListener("click", () => showLightbox(thisIndex));
+          console.log("Added iframe", index + 1, "with src:", iframeClone.src);
+        } else {
+          const img = element as HTMLImageElement;
+          const imgClone = img.cloneNode(true) as HTMLImageElement;
+          // Set constant height, let width be proportional
+          imgClone.style.height = "144px";
+          imgClone.style.width = "auto";
+          imgClone.style.objectFit = "contain";
+          imgClone.style.objectPosition = "center";
+          imgClone.style.display = "block";
+
+          // Only apply border styling to the first image
+          if (index === 0) {
+            imgClone.style.outline = "0.25px solid black";
+            imgClone.style.borderTop = "0.25px solid black";
+            imgClone.style.borderBottom = "0.25px solid black";
+            imgClone.style.borderLeft = "0.25px solid black";
+          } else {
+            imgClone.style.outline = "0.25px solid black";
+            imgClone.style.borderTop = "0.25px solid black";
+            imgClone.style.borderBottom = "0.25px solid black";
+          }
+
+          imageGrid.appendChild(imgClone);
+          const thisIndex = gallerySrcs.length;
+          gallerySrcs.push(img.src);
+          galleryAlts.push(img.alt || "");
+          galleryTypes.push("img");
+          imgClone.style.cursor = "zoom-in";
+          imgClone.addEventListener("click", () => showLightbox(thisIndex));
+          console.log("Added image", index + 1, "with src:", imgClone.src);
+        }
       });
 
       // Hide the gallery if no images were found
