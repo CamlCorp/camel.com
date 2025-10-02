@@ -6,33 +6,15 @@ import { Image } from "astro:assets";
 import "../styles/global.css";
 import Navigation from "../components/Navigation.astro";
 
-// Import camel images
-import camel001 from "../images/camels/001.png";
-import camel002 from "../images/camels/002.png";
-import camel003 from "../images/camels/003.png";
-import camel004 from "../images/camels/004.png";
-import camel005 from "../images/camels/005.png";
-import camel006 from "../images/camels/006.png";
-import camel007 from "../images/camels/007.png";
-
 const { title, description, image } = Astro.props;
 const currentPath = Astro.url.pathname;
 
-const camelImages = [
-  camel001,
-  camel002,
-  camel003,
-  camel004,
-  camel005,
-  camel006,
-  camel007,
-];
 ---
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.png" />
     <link rel="canonical" href={`https://c-a-m-e-l.org${currentPath}`} />
     <meta name="viewport" content="width=device-width" />
     <link rel="sitemap" href="/sitemap-index.xml" />
