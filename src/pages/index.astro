@@ -46,7 +46,7 @@ allWork.sort((a, b) => {
 </style>
 
 <BaseLayout title={title} description={meta} image={image.src}>
-  <!-- <ul>
+  <ul>
     {
       allWork.map((post: any) => (
         <li>
@@ -54,9 +54,8 @@ allWork.sort((a, b) => {
             <Image src={post.data.image} alt={post.data.imgAlt} />
           </a>
           <GetWork post={post} />
-          {/* <a href={`/work/${post.id}/`}>{post.data.description}</a> */}
         </li>
       ))
     }
-  </ul> -->
+  </ul>
 </BaseLayout>
