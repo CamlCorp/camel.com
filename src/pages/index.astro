@@ -9,12 +9,8 @@ import image from "../images/og.png";
 import { getCollection } from "astro:content";
 const allWork = await getCollection("work");
 
-allWork.sort((a, b) => {
-  const dateA = new Date(a.data.pubDate).getTime(); // Convert to timestamp
-  const dateB = new Date(b.data.pubDate).getTime(); // Convert to timestamp
-
-  return dateB - dateA; // Subtracting timestamps is valid
-});
+const latinStart = (str: string) => str.match(/[a-zA-Z].*/)?.[0] ?? str;
+allWork.sort((a, b) => latinStart(a.data.title).localeCompare(latinStart(b.data.title)));
 ---
 
 <style>
