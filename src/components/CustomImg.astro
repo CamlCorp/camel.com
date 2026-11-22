@@ -6,9 +6,10 @@ type Props = {
   src: string | ImageMetadata;
   alt: string;
   title: string;
+  [key: `data-${string}`]: string | undefined;
 };
 
-const { src, alt, title } = Astro.props;
+const { src, alt, title, ...rest } = Astro.props;
 
 // Function to convert `/italic text/` to <i> tags
 const convertSlashToHtml = (text: string) => {
@@ -50,9 +51,9 @@ const titleWithLink = parsedAlt.replace(
 <figure>
   {
     typeof src === "string" ? (
-      <img src={src} alt={alt} />
+      <img src={src} alt={alt} {...rest} />
     ) : (
-      <Image src={src} alt={alt} />
+      <Image src={src} alt={alt} {...rest} />
     )
   }
 

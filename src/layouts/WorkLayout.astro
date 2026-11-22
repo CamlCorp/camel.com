@@ -78,7 +78,8 @@ import BaseLayout from "./BaseLayout.astro";
     word-break: break-all;
   }
 
-  img {
+  img,
+  .heroVideo {
     width: 100%;
     height: auto;
     margin-bottom: var(--m-2);
@@ -121,6 +122,14 @@ import BaseLayout from "./BaseLayout.astro";
     flex-direction: column;
     max-width: var(--maxWidth);
     z-index: 1;
+  }
+  /* Spacing between article items (text, figures): 1.5x the global 12px */
+  .md :global(p) {
+    margin-bottom: 18px;
+  }
+  /* Gallery-only images: hidden in the article, shown in the gallery strip */
+  .md :global(img[data-gallery="only"]) {
+    display: none;
   }
   .btnContainer {
     margin: var(--m-2) 0;
@@ -395,7 +404,25 @@ import BaseLayout from "./BaseLayout.astro";
     <div class="imageGrid" id="imageGrid"></div>
   </div>
   <div class="mdContainer">
-    <Image src={frontmatter.image} alt={frontmatter.imgAlt} />
+    <Image
+      src={frontmatter.image}
+      alt={frontmatter.imgAlt}
+      style={frontmatter.heroVideo ? "display: none;" : undefined}
+    />
+    {
+      frontmatter.heroVideo && (
+        <video
+          class="heroVideo"
+          autoplay
+          muted
+          loop
+          playsinline
+          data-caption={frontmatter.heroVideoAlt ?? ""}
+        >
+          <source src={frontmatter.heroVideo} type="video/mp4" />
+        </video>
+      )
+    }
 
     <article class="md">
       <slot />
@@ -495,10 +522,54 @@ import BaseLayout from "./BaseLayout.astro";
         if (!lightbox || !lightboxImage || gallerySrcs.length === 0) return;
         currentIndex = (index + gallerySrcs.length) % gallerySrcs.length;
 
-        // Check if the current item is an iframe using our tracking array
+        // Check the current item's type using our tracking array
         const isIframe = galleryTypes[currentIndex] === "iframe";
+        const isVideo = galleryTypes[currentIndex] === "video";
 
-        if (isIframe) {
+        // Video slides get their own element; hide/stop it for other slides
+        let lightboxVideo = document.getElementById(
+          "lightboxVideo"
+        ) as HTMLVideoElement | null;
+        if (isVideo) {
+          if (!lightboxVideo) {
+            lightboxVideo = document.createElement("video");
+            lightboxVideo.id = "lightboxVideo";
+            lightboxVideo.muted = true;
+            lightboxVideo.loop = true;
+            lightboxVideo.autoplay = true;
+            lightboxVideo.playsInline = true;
+            lightboxVideo.style.maxWidth = "90vw";
+            lightboxVideo.style.maxHeight = "80vh";
+            lightboxVideo.style.width = "100%";
+            lightboxVideo.style.height = "auto";
+            lightboxVideo.style.objectFit = "contain";
+            lightboxVideo.style.cursor = "pointer";
+            lightboxVideo.addEventListener("click", () =>
+              showLightbox(currentIndex + 1)
+            );
+            lightbox.insertBefore(lightboxVideo, lightboxImage.nextSibling);
+          }
+          lightboxImage.style.display = "none";
+          const lightboxIframe = document.getElementById(
+            "lightboxIframe"
+          ) as HTMLIFrameElement | null;
+          if (lightboxIframe) {
+            lightboxIframe.style.display = "none";
+            lightboxIframe.src = "";
+          }
+          if (lightboxVideo.getAttribute("src") !== gallerySrcs[currentIndex]) {
+            lightboxVideo.src = gallerySrcs[currentIndex];
+          }
+          lightboxVideo.style.display = "block";
+          lightboxVideo.play().catch(() => {});
+        } else if (lightboxVideo) {
+          lightboxVideo.pause();
+          lightboxVideo.style.display = "none";
+        }
+
+        if (isVideo) {
+          // handled above
+        } else if (isIframe) {
           // Hide the image and show iframe
           lightboxImage.style.display = "none";
           let lightboxIframe = document.getElementById(
@@ -545,6 +616,9 @@ import BaseLayout from "./BaseLayout.astro";
       }
       function hideLightbox() {
         if (!lightbox) return;
+        (
+          document.getElementById("lightboxVideo") as HTMLVideoElement | null
+        )?.pause();
         lightbox.style.display = "none";
         document.body.style.overflow = "";
       }
@@ -624,6 +698,15 @@ import BaseLayout from "./BaseLayout.astro";
           console.log("Added iframe", index + 1, "with src:", iframeClone.src);
         } else {
           const img = element as HTMLImageElement;
+          // Inline-only images (e.g. crops) stay out of the gallery
+          if (img.dataset.gallery === "skip") return;
+          // Skip body images identical to the hero (already first in the grid)
+          if (
+            frontmatterImage &&
+            img.src === (frontmatterImage as HTMLImageElement).src
+          ) {
+            return;
+          }
           const imgClone = img.cloneNode(true) as HTMLImageElement;
           // Set constant height, let width be proportional
           imgClone.style.height = "144px";
@@ -654,6 +737,35 @@ import BaseLayout from "./BaseLayout.astro";
           console.log("Added image", index + 1, "with src:", imgClone.src);
         }
       });
+
+      // Add the hero video (if any) as the last item in the grid
+      const heroVideo = document.querySelector(
+        ".mdContainer video.heroVideo"
+      ) as HTMLVideoElement | null;
+      const heroVideoSrc = heroVideo?.querySelector("source")?.src;
+      if (heroVideo && heroVideoSrc) {
+        const videoThumb = document.createElement("video");
+        videoThumb.src = heroVideoSrc;
+        videoThumb.muted = true;
+        videoThumb.loop = true;
+        videoThumb.autoplay = true;
+        videoThumb.playsInline = true;
+        videoThumb.style.height = "144px";
+        videoThumb.style.width = "auto";
+        videoThumb.style.display = "block";
+        videoThumb.style.objectFit = "contain";
+        videoThumb.style.outline = "0.25px solid black";
+        videoThumb.style.borderTop = "0.25px solid black";
+        videoThumb.style.borderBottom = "0.25px solid black";
+
+        imageGrid.appendChild(videoThumb);
+        const thisIndex = gallerySrcs.length;
+        gallerySrcs.push(heroVideoSrc);
+        galleryAlts.push(heroVideo.dataset.caption || "");
+        galleryTypes.push("video");
+        videoThumb.style.cursor = "zoom-in";
+        videoThumb.addEventListener("click", () => showLightbox(thisIndex));
+      }
 
       // Hide the gallery if no images were found
       if (imageGrid.children.length === 0) {

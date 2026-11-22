@@ -13,6 +13,11 @@ const work = defineCollection({
       links: z.array(z.string()),
       image: image(),
       imgAlt:  z.string(),
+      // Optional video (path under /public) shown as the hero in place of `image`;
+      // `image` is still used for the /work thumbnail, the gallery strip, and OG.
+      heroVideo: z.string().optional(),
+      // Caption for the hero video's slide (last item in the gallery strip)
+      heroVideoAlt: z.string().optional(),
       tags: z.array(z.string())
     })
 });

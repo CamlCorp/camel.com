@@ -5,6 +5,6 @@ CAMEL is a design and research practice that embeds buildings, drawings, objects
 عمر محمد [Omar Mohammad](https://www.omarmhmmd.com/) founded CAMEL in 2024. He has taught design at the California College of the Arts and at UC Davis. He has designed independently, at cultural institutions such as the San Francisco Museum of Modern Art, and at large corporations in the Bay Area. He has exhibited, lectured, and presented work around the world, recently at [school](https://weloveschool.org/performative-screenings/between-worlds) in Vienna, [whatreallymatters](https://unrealizedarchive.com/text-to-image/omar-mohammad/) in Seoul, and the [Center for Fiction](https://www.youtube.com/live/aCglHCuxTLQ) in Brooklyn. His work and writings have been published by itsnicethat, are.na, and UC Davis. He is a recent graduate of the Master of Design program at the UC Berkeley College of Environmental Design & College of Enegineering where he was an Arcus Fellow and an American Cultures Engaged Scholar. He received his BA in Design from UC Davis.
 
 #### Networks
-[omarmhmmd@berkeley.edu](mailto:omarmhmmd@berkeley.edu)  
-[instagram.com/om1_camel](https://www.instagram.com/om1_camel/)   
+[omar.mhmmd@gmail.com](mailto:omar.mhmmd@gmail.com)  
+[instagram.com/omarmhmmd1](https://www.instagram.com/omarmhmmd1/)   
 [are.na/camel](https://www.are.na/camel-kfjwtzzxb8u/channels)  

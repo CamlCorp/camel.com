@@ -41,6 +41,12 @@
         "imgAlt": {
           "type": "string"
         },
+        "heroVideo": {
+          "type": "string"
+        },
+        "heroVideoAlt": {
+          "type": "string"
+        },
         "tags": {
           "type": "array",
           "items": {
