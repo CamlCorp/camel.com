@@ -77,6 +77,10 @@ const currentPath = Astro.url.pathname;
     <SpeedInsights />
     <Analytics />
     <script>
+      import { initIdleCamel } from "../scripts/idleCamel";
+      initIdleCamel();
+    </script>
+    <script>
       // Dev-only Agentation toolbar. Vite replaces import.meta.env.DEV with
       // `false` in production, so this branch and its import are dropped.
       if (import.meta.env.DEV) {
